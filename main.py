@@ -1,4 +1,4 @@
-from random import choice
+from random import choice, sample, randint
 
 import networkx as nx
 from matplotlib import pyplot as plt
@@ -94,6 +94,7 @@ def simulate(network):
                 loop = True
                 routing_table[neighbour] = neighbour, 1
                 send(network, node, neighbour, {"type": "route_request"})
+                send_to_neighbours(network, node, {"type": "route_update", "routes": [(neighbour, 1)]})
 
             # tell neighbours about nodes that have been disconnected
             for neighbour in neighbours_in_routing_table.difference(actual_neighbours):
@@ -174,8 +175,11 @@ def main():
         nx.draw(network, with_labels=True)
         plt.show()
 
-        u, v = choice(list(network.edges))
-        network.remove_edge(u, v)
+        new_node = len(network.nodes)
+        connected_nodes = sample(list(network.nodes), randint(1, len(network.nodes)))
+        network.add_node(new_node, routing_table={}, receive_buffer=[])
+        for connected_node in connected_nodes:
+            network.add_edge(new_node, connected_node)
 
 
 if __name__ == "__main__":
