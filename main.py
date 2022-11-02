@@ -94,7 +94,9 @@ def simulate(network):
                 loop = True
                 routing_table[neighbour] = neighbour, 1
                 send(network, node, neighbour, {"type": "route_request"})
-                send_to_neighbours(network, node, {"type": "route_update", "routes": [(neighbour, 1)]})
+                send_to_neighbours(
+                    network, node, {"type": "route_update", "routes": [(neighbour, 1)]}
+                )
 
             # tell neighbours about nodes that have been disconnected
             for neighbour in neighbours_in_routing_table.difference(actual_neighbours):
